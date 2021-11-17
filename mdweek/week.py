@@ -123,16 +123,13 @@ class WeekCalculator:
         old_dow = d.isoweekday()
         first_dow = _WEEK_CONFIG.first_dow
 
-        d2 = d + datetime.timedelta(days=first_dow - old_dow)
-        if first_dow <= old_dow:
-            d3 = d2
-        else:
-            d3 = d2 + datetime.timedelta(days=-7)
-        d4 = d3 + datetime.timedelta(days=target_dow - first_dow)
-        if target_dow <= first_dow:
-            return d4
-        else:
-            return d4 + datetime.timedelta(days=-7)
+        diff1 = first_dow - old_dow
+        d1 = d + datetime.timedelta(days=diff1)
+
+        diff2 = target_dow - first_dow
+        d2 = d1 + datetime.timedelta(days=diff2)
+
+        return d2
 
     def date(self, w: Week, dow: int) -> datetime.date:
         """
