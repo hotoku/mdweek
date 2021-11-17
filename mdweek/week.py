@@ -145,7 +145,9 @@ class WeekCalculator:
         日付dに対応するWeekを返す。
         """
         d1 = _WEEK_CONFIG.first_date(d.year)
-        if d >= d1:
+        d12 = self.move_to_dow(d1, _WEEK_CONFIG.first_dow)
+        d13 = self.move_to_dow(d, _WEEK_CONFIG.first_dow)
+        if d13 >= d12:
             year = d.year
         else:
             year = d.year - 1

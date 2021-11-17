@@ -25,3 +25,8 @@ def test_date(wc: WeekCalculator):
         d1 = wc.date(Week(2021, 1), i)
         d2 = date(2021, 1, 3) + timedelta(days=i)
         assert d1 == d2
+
+
+def test_week(wc: WeekCalculator):
+    assert wc.week(date(2021, 1, 3)) == Week(2020, 53)
+    assert wc.week(date(2021, 1, 4)) == Week(2021, 1)
