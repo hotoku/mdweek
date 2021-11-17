@@ -116,20 +116,22 @@ class WeekCalculator:
     def to_str(self, w: Week) -> str:
         return _WEEK_CONFIG.to_str(w)
 
+    def move_to_first_day_of_week(self, d: datetime.date) -> datetime.date:
+        first_dow = _WEEK_CONFIG.first_dow % 7
+        this_dow = d.isoweekday() % 7
+        diff = this_dow - first_dow
+        if diff < 0:
+            diff += 7
+        return d - datetime.timedelta(days=diff)
+
     def move_to_dow(self, d: datetime.date, target_dow: int) -> datetime.date:
         """
         同じ週の特定の曜日の日付を返す。
         """
-        old_dow = d.isoweekday()
-        first_dow = _WEEK_CONFIG.first_dow
+        d1 = self.move_to_firstday_of_week(d)
 
-        diff1 = first_dow - old_dow
-        d1 = d + datetime.timedelta(days=diff1)
-
-        diff2 = target_dow - first_dow
-        d2 = d1 + datetime.timedelta(days=diff2)
-
-        return d2
+        target_dow %= 7
+        this_dow = d1.isoweekday() % 7
 
     def date(self, w: Week, dow: int) -> datetime.date:
         """
