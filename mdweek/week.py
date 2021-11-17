@@ -117,11 +117,7 @@ class WeekCalculator:
         return _WEEK_CONFIG.to_str(w)
 
     def move_to_first_day_of_week(self, d: datetime.date) -> datetime.date:
-        first_dow = _WEEK_CONFIG.first_dow % 7
-        this_dow = d.isoweekday() % 7
-        diff = this_dow - first_dow
-        if diff < 0:
-            diff += 7
+        diff = (d.isoweekday() - _WEEK_CONFIG.first_dow) % 7
         return d - datetime.timedelta(days=diff)
 
     def move_to_dow(self, d: datetime.date, target_dow: int) -> datetime.date:
