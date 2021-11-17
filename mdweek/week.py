@@ -125,9 +125,14 @@ class WeekCalculator:
 
         d2 = d + datetime.timedelta(days=first_dow - old_dow)
         if first_dow <= old_dow:
-            return d2
+            d3 = d2
         else:
-            return d2 + datetime.timedelta(days=-7)
+            d3 = d2 + datetime.timedelta(days=-7)
+        d4 = d3 + datetime.timedelta(days=target_dow - first_dow)
+        if target_dow <= first_dow:
+            return d4
+        else:
+            return d4 + datetime.timedelta(days=-7)
 
     def date(self, w: Week, dow: int) -> datetime.date:
         """
