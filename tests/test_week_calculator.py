@@ -85,3 +85,14 @@ def test_week(wc: WeekCalculator):
     setup_week_config(IsoWeekConfig())
     assert wc.week(date(2021, 1, 3)) == Week(2020, 53)
     assert wc.week(date(2021, 1, 4)) == Week(2021, 1)
+
+    setup_week_config(SundayStartConfig())
+    assert wc.week(date(2021, 1, 2)) == Week(2020, 53)
+    assert wc.week(date(2021, 1, 3)) == Week(2021, 1)
+    assert wc.week(date(2021, 1, 4)) == Week(2021, 1)
+
+    setup_week_config(TuesdayStartConfig())
+    assert wc.week(date(2021, 1, 2)) == Week(2020, 53)
+    assert wc.week(date(2021, 1, 3)) == Week(2020, 53)
+    assert wc.week(date(2021, 1, 4)) == Week(2020, 53)
+    assert wc.week(date(2021, 1, 5)) == Week(2021, 1)
