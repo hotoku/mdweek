@@ -73,6 +73,10 @@ class Week:
     def parse(s: str) -> Week:
         return WeekCalculation.parse(s)
 
+    @staticmethod
+    def from_date(d: datetime.date) -> Week:
+        return WeekCalculation.week(d)
+
     def date(self, dow: int) -> datetime.date:
         return WeekCalculation.date(self, dow)
 
