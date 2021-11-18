@@ -3,10 +3,9 @@ from mdweek.week import Week
 
 def test_add():
     d1 = Week(2020, 1)
-    assert d1 + 53 == Week(2021, 1)
-
     assert d1 + 1 == Week(2020, 2)
     assert d1 + 52 == Week(2020, 53)
+    assert d1 + 53 == Week(2021, 1)
     assert d1 + 53 + 51 == Week(2021, 52)
     assert d1 + 53 + 51 + 1 == Week(2022, 1)
     assert d1 - 1 == Week(2019, 52)
