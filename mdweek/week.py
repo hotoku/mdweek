@@ -50,13 +50,24 @@ class WeekCalculation:
         """
         日付dに対応するWeekを返す。
         """
-        d1 = _WEEK_CONFIG.first_date(d.year)
-        d12 = cls.move_to_dow(d1, _WEEK_CONFIG.first_dow)
-        d13 = cls.move_to_dow(d, _WEEK_CONFIG.first_dow)
-        if d13 >= d12:
+
+        # this: 引数の週
+        # b: 引数の年の最初の週
+        # c: 引数の翌年の最初の週
+        # this < b < c
+        # b <= this < c
+        # b < c <= this 
+        # の3パターンがあり得る
+        this = cls.move_to_first_day_of_week(d)
+        b = cls.move_to_first_day_of_week(_WEEK_CONFIG.first_date(d.year))
+        c = cls.move_to_first_day_of_week(_WEEK_CONFIG.first_date(d.year + 1))
+        if this < b:
+            year = d.year - 1
+        elif b <= this < c:
             year = d.year
         else:
-            year = d.year - 1
+            year = d.year + 1
+
         d2 = _WEEK_CONFIG.first_date(year)
         d3 = cls.move_to_dow(d2, _WEEK_CONFIG.first_dow)
         d4 = cls.move_to_dow(d, _WEEK_CONFIG.first_dow)
