@@ -6,52 +6,64 @@ from typing import Union, overload
 
 
 
-def parse(s: str) -> Week:
-    return _WEEK_CONFIG.parse(s)
 
-def to_str(w: Week) -> str:
-    return _WEEK_CONFIG.to_str(w)
+class WeekCalculation:
+    """
+    週単位の演算を補助するクラス。
+    このクラスの関数の挙動は、_WEEK_CONFIGオブジェクトによってカスタマイズできる。
+    """
+    @staticmethod
+    def parse(s: str) -> Week:
+        return _WEEK_CONFIG.parse(s)
 
-def move_to_first_day_of_week(d: datetime.date) -> datetime.date:
-    diff = (d.isoweekday() - _WEEK_CONFIG.first_dow) % 7
-    return d - datetime.timedelta(days=diff)
+    @staticmethod
+    def to_str(w: Week) -> str:
+        return _WEEK_CONFIG.to_str(w)
 
-def move_to_dow(d: datetime.date, target_dow: int) -> datetime.date:
-    """
-    同じ週の特定の曜日の日付を返す。
-    """
-    diff = target_dow - d.isoweekday()
-    d1 = d + datetime.timedelta(days=diff)
-    d2 = move_to_first_day_of_week(d1)
-    d3 = move_to_first_day_of_week(d)
-    diff2 = d3 - d2
-    return d1 + diff2
+    @staticmethod
+    def move_to_first_day_of_week(d: datetime.date) -> datetime.date:
+        diff = (d.isoweekday() - _WEEK_CONFIG.first_dow) % 7
+        return d - datetime.timedelta(days=diff)
 
-def date(w: Week, dow: int) -> datetime.date:
-    """
-    w週のdow曜日の日付を返す。
-    """
-    d1 = _WEEK_CONFIG.first_date(w.year)
-    d2 = move_to_dow(d1, _WEEK_CONFIG.first_dow)
-    d3 = d2 + datetime.timedelta(days=7 * (w.week - 1))
-    return move_to_dow(d3, dow)
+    @classmethod
+    def move_to_dow(cls, d: datetime.date, target_dow: int) -> datetime.date:
+        """
+        同じ週の特定の曜日の日付を返す。
+        """
+        diff = target_dow - d.isoweekday()
+        d1 = d + datetime.timedelta(days=diff)
+        d2 = cls.move_to_first_day_of_week(d1)
+        d3 = cls.move_to_first_day_of_week(d)
+        diff2 = d3 - d2
+        return d1 + diff2
 
-def week(d: datetime.date) -> Week:
-    """
-    日付dに対応するWeekを返す。
-    """
-    d1 = _WEEK_CONFIG.first_date(d.year)
-    d12 = move_to_dow(d1, _WEEK_CONFIG.first_dow)
-    d13 = move_to_dow(d, _WEEK_CONFIG.first_dow)
-    if d13 >= d12:
-        year = d.year
-    else:
-        year = d.year - 1
-    d2 = _WEEK_CONFIG.first_date(year)
-    d3 = move_to_dow(d2, _WEEK_CONFIG.first_dow)
-    d4 = move_to_dow(d, _WEEK_CONFIG.first_dow)
-    week = (d4 - d3).days // 7
-    return Week(year, week + 1)
+    @classmethod
+    def date(cls, w: Week, dow: int) -> datetime.date:
+        """
+        w週のdow曜日の日付を返す。
+        """
+        d1 = _WEEK_CONFIG.first_date(w.year)
+        d2 = cls.move_to_dow(d1, _WEEK_CONFIG.first_dow)
+        d3 = d2 + datetime.timedelta(days=7 * (w.week - 1))
+        return cls.move_to_dow(d3, dow)
+
+    @classmethod
+    def week(cls, d: datetime.date) -> Week:
+        """
+        日付dに対応するWeekを返す。
+        """
+        d1 = _WEEK_CONFIG.first_date(d.year)
+        d12 = cls.move_to_dow(d1, _WEEK_CONFIG.first_dow)
+        d13 = cls.move_to_dow(d, _WEEK_CONFIG.first_dow)
+        if d13 >= d12:
+            year = d.year
+        else:
+            year = d.year - 1
+        d2 = _WEEK_CONFIG.first_date(year)
+        d3 = cls.move_to_dow(d2, _WEEK_CONFIG.first_dow)
+        d4 = cls.move_to_dow(d, _WEEK_CONFIG.first_dow)
+        week = (d4 - d3).days // 7
+        return Week(year, week + 1)
 
 
 @dataclass(frozen=True)
@@ -61,13 +73,13 @@ class Week:
 
     @staticmethod
     def parse(s: str) -> Week:
-        return parse(s)
+        return WeekCalculation.parse(s)
 
     def date(self, dow: int) -> datetime.date:
-        return date(self, dow)
+        return WeekCalculation.date(self, dow)
 
     def __str__(self) -> str:
-        return to_str(self)
+        return WeekCalculation.to_str(self)
 
     def __lt__(self, other: Week) -> bool:
         if self.year < other.year:
@@ -98,9 +110,9 @@ class Week:
         return self.week >= other.week
 
     def __add__(self, n: int) -> Week:
-        sun = date(self, 0)
+        sun = WeekCalculation.date(self, 0)
         day = sun + datetime.timedelta(days=7 * n)
-        return week(day)
+        return WeekCalculation.week(day)
 
     @overload
     def __sub__(self, arg: int) -> Week:
@@ -114,12 +126,18 @@ class Week:
         if isinstance(arg, int):
             return self + (-arg)
         if isinstance(arg, Week):
-            s1 = date(self, 0)
-            s2 = date(arg, 0)
+            s1 = WeekCalculation.date(self, 0)
+            s2 = WeekCalculation.date(arg, 0)
             return (s1 - s2).days // 7
 
 
 class WeekConfig(ABC):
+    """
+    週の定義をカスタマイズするためのインターフェイスを定義する抽象クラス。
+    1. 年間の第一週目を決める日付
+    2. 週の始まりの曜日
+    を設定できる。
+    """
     @abstractmethod
     def first_date(self, year: int) -> datetime.date:
         """
@@ -162,9 +180,15 @@ class IsoWeekConfig(WeekConfig):
 
 
 
+"""
+週の定義の詳細を保持する変数
+"""
 _WEEK_CONFIG = IsoWeekConfig()
 
 
 def setup_week_config(wc: WeekConfig) -> None:
+    """
+    週の定義のカスタマイズを反映させる関数
+    """
     global _WEEK_CONFIG
     _WEEK_CONFIG = wc

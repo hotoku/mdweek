@@ -1,7 +1,12 @@
 from datetime import date
 
-from mdweek.week import IsoWeekConfig, Week, setup_week_config
-import mdweek.week as wc
+from mdweek.week import (
+    IsoWeekConfig,
+    Week,
+    setup_week_config,
+    WeekCalculation as wc
+)
+
 
 
 
