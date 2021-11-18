@@ -59,11 +59,26 @@ def test_move_to_dow(wc: WeekCalculator):
 
 
 def test_date(wc: WeekCalculator):
+    week = Week(2021, 1)
+
     setup_week_config(IsoWeekConfig())
     for i in range(1, 8):
-        d1 = wc.date(Week(2021, 1), i)
-        d2 = date(2021, 1, 3) + timedelta(days=i)
-        assert d1 == d2
+        d = wc.date(week, i)
+        assert d == date(2021, 1, 3 + i)
+
+    setup_week_config(SundayStartConfig())
+    for i in range(1, 8):
+        d = wc.date(week, i)
+        assert d == date(2021, 1, 3 + (i % 7))
+
+    setup_week_config(TuesdayStartConfig())
+    assert wc.date(week, 1) == date(2021, 1, 11)
+    assert wc.date(week, 2) == date(2021, 1, 5)
+    assert wc.date(week, 3) == date(2021, 1, 6)
+    assert wc.date(week, 4) == date(2021, 1, 7)
+    assert wc.date(week, 5) == date(2021, 1, 8)
+    assert wc.date(week, 6) == date(2021, 1, 9)
+    assert wc.date(week, 7) == date(2021, 1, 10)
 
 
 def test_week(wc: WeekCalculator):
