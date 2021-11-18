@@ -1,12 +1,8 @@
-from datetime import date, timedelta
-import pytest
+from datetime import date
 
-from mdweek.week import IsoWeekConfig, Week, WeekCalculator, WeekConfig, setup_week_config
+from mdweek.week import IsoWeekConfig, Week, setup_week_config
+import mdweek.week as wc
 
-
-@pytest.fixture
-def wc() -> WeekCalculator:
-    return WeekCalculator()
 
 
 class SundayStartConfig(IsoWeekConfig):
@@ -21,7 +17,7 @@ class TuesdayStartConfig(IsoWeekConfig):
         return 2
 
 
-def test_move_to_first_day_of_week(wc: WeekCalculator):
+def test_move_to_first_day_of_week():
     setup_week_config(IsoWeekConfig())
     for d in range(4, 11):
         d = date(2021, 1, d)
@@ -38,7 +34,7 @@ def test_move_to_first_day_of_week(wc: WeekCalculator):
         assert date(2021, 1, 3) == wc.move_to_first_day_of_week(d)
 
 
-def test_move_to_dow(wc: WeekCalculator):
+def test_move_to_dow():
     base = date(2021, 1, 6)
     setup_week_config(IsoWeekConfig())
     for i in range(1, 8):
@@ -58,7 +54,7 @@ def test_move_to_dow(wc: WeekCalculator):
     assert wc.move_to_dow(base, 7) == date(2021, 1, 10)
 
 
-def test_date(wc: WeekCalculator):
+def test_date():
     week = Week(2021, 1)
 
     setup_week_config(IsoWeekConfig())
@@ -81,7 +77,7 @@ def test_date(wc: WeekCalculator):
     assert wc.date(week, 7) == date(2021, 1, 10)
 
 
-def test_week(wc: WeekCalculator):
+def test_week():
     setup_week_config(IsoWeekConfig())
     assert wc.week(date(2021, 1, 3)) == Week(2020, 53)
     assert wc.week(date(2021, 1, 4)) == Week(2021, 1)
