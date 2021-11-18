@@ -124,10 +124,12 @@ class WeekCalculator:
         """
         同じ週の特定の曜日の日付を返す。
         """
-        d1 = self.move_to_firstday_of_week(d)
-
-        target_dow %= 7
-        this_dow = d1.isoweekday() % 7
+        diff = target_dow - d.isoweekday()
+        d1 = d + datetime.timedelta(days=diff)
+        d2 = self.move_to_first_day_of_week(d1)
+        d3 = self.move_to_first_day_of_week(d)
+        diff2 = d3 - d2
+        return d1 + diff2
 
     def date(self, w: Week, dow: int) -> datetime.date:
         """
