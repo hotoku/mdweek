@@ -5,8 +5,6 @@ import datetime
 from typing import Union, overload
 
 
-
-
 class WeekCalculation:
     """
     週単位の演算を補助するクラス。
@@ -174,10 +172,6 @@ class IsoWeekConfig(WeekConfig):
         else:
             # year-01-01が金〜日曜日なら、翌週の木曜日
             return jan1 + datetime.timedelta(days=7 + 4 - jan1.isoweekday())
-
-
-
-
 
 
 """
