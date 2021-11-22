@@ -28,12 +28,9 @@ class WeekCalculation:
         """
         同じ週の特定の曜日の日付を返す。
         """
-        diff = target_dow - d.isoweekday()
-        d1 = d + datetime.timedelta(days=diff)
-        d2 = cls.move_to_first_day_of_week(d1)
-        d3 = cls.move_to_first_day_of_week(d)
-        diff2 = d3 - d2
-        return d1 + diff2
+        d1 = cls.move_to_first_day_of_week(d)
+        diff = (target_dow - _WEEK_CONFIG.first_dow) % 7
+        return d1 + datetime.timedelta(days=diff)
 
     @classmethod
     def date(cls, w: Week, dow: int) -> datetime.date:
@@ -41,9 +38,8 @@ class WeekCalculation:
         w週のdow曜日の日付を返す。
         """
         d1 = _WEEK_CONFIG.first_date(w.year)
-        d2 = cls.move_to_dow(d1, _WEEK_CONFIG.first_dow)
-        d3 = d2 + datetime.timedelta(days=7 * (w.week - 1))
-        return cls.move_to_dow(d3, dow)
+        d2 = cls.move_to_dow(d1, dow)
+        return d2 + datetime.timedelta(days=7 * (w.week - 1))
 
     @classmethod
     def week(cls, d: datetime.date) -> Week:
