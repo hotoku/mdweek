@@ -52,7 +52,7 @@ class WeekCalculation:
         # c: 引数の翌年の最初の週
         # this < b < c
         # b <= this < c
-        # b < c <= this 
+        # b < c <= this
         # の3パターンがあり得る
         this = cls.move_to_first_day_of_week(d)
         b = cls.move_to_first_day_of_week(_WEEK_CONFIG.first_date(d.year))
@@ -65,8 +65,8 @@ class WeekCalculation:
             year = d.year + 1
 
         d2 = _WEEK_CONFIG.first_date(year)
-        d3 = cls.move_to_dow(d2, _WEEK_CONFIG.first_dow)
-        d4 = cls.move_to_dow(d, _WEEK_CONFIG.first_dow)
+        d3 = cls.move_to_first_day_of_week(d2)
+        d4 = cls.move_to_first_day_of_week(d)
         week = (d4 - d3).days // 7
         return Week(year, week + 1)
 
