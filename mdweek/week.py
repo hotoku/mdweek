@@ -197,3 +197,7 @@ def setup_week_config(wc: WeekConfig) -> None:
     """
     global _WEEK_CONFIG
     _WEEK_CONFIG = wc
+
+
+def get_week_config() -> WeekConfig:
+    return _WEEK_CONFIG
