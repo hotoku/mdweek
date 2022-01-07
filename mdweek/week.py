@@ -119,7 +119,7 @@ class Week:
         return self.week >= other.week
 
     def __add__(self, n: int) -> Week:
-        sun = WeekCalculation.date(self, 0)
+        sun = WeekCalculation.date(self, 7)
         day = sun + datetime.timedelta(days=7 * n)
         return WeekCalculation.week(day)
 
@@ -135,8 +135,8 @@ class Week:
         if isinstance(arg, int):
             return self + (-arg)
         if isinstance(arg, Week):
-            s1 = WeekCalculation.date(self, 0)
-            s2 = WeekCalculation.date(arg, 0)
+            s1 = WeekCalculation.date(self, 7)
+            s2 = WeekCalculation.date(arg, 7)
             return (s1 - s2).days // 7
 
 
