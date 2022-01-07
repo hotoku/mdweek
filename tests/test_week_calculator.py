@@ -9,8 +9,6 @@ from mdweek.week import (
 )
 
 
-
-
 class SundayStartConfig(IsoWeekConfig):
     @property
     def first_dow(self) -> int:
@@ -22,6 +20,7 @@ class TuesdayStartConfig(IsoWeekConfig):
     def first_dow(self) -> int:
         return 2
 
+
 class SundayJan1Config(WeekConfig):
     @property
     def first_dow(self) -> int:
@@ -30,9 +29,11 @@ class SundayJan1Config(WeekConfig):
     def first_date(self, year: int) -> date:
         return date(year, 1, 1)
 
+
 class MondayDec31Config(WeekConfig):
     def first_date(self, year: int) -> date:
         return date(year, 12, 31)
+
 
 class SundayDec31Config(WeekConfig):
     def first_date(self, year: int) -> date:
@@ -42,6 +43,7 @@ class SundayDec31Config(WeekConfig):
     def first_dow(self) -> int:
         return 7
 
+
 def test_move_to_first_day_of_week():
     setup_week_config(IsoWeekConfig())
     for d in range(4, 11):
@@ -49,7 +51,7 @@ def test_move_to_first_day_of_week():
         assert date(2021, 1, 4) == wc.move_to_first_day_of_week(d), d
 
     setup_week_config(TuesdayStartConfig())
-    for d in range(5, 11):
+    for d in range(5, 12):
         d = date(2021, 1, d)
         assert date(2021, 1, 5) == wc.move_to_first_day_of_week(d), d
 
@@ -102,7 +104,6 @@ def test_date():
     assert wc.date(week, 7) == date(2021, 1, 10)
 
 
-
 def test_week():
     setup_week_config(IsoWeekConfig())
     assert wc.week(date(2021, 1, 3)) == Week(2020, 53)
@@ -119,6 +120,7 @@ def test_week():
     assert wc.week(date(2021, 1, 4)) == Week(2020, 53)
     assert wc.week(date(2021, 1, 5)) == Week(2021, 1)
 
+
 def test_week2():
     setup_week_config(SundayJan1Config())
     base = date(2020, 12, 27)
@@ -126,6 +128,7 @@ def test_week2():
         assert wc.week(base + timedelta(days=i)) == Week(2021, 1), i
     for i in range(7, 14):
         assert wc.week(base + timedelta(days=i)) == Week(2021, 2), i
+
 
 def test_week3():
     setup_week_config(MondayDec31Config())
@@ -137,6 +140,7 @@ def test_week3():
     for i in range(7, 14):
         assert wc.week(base + timedelta(days=i)) == Week(2020, 2), i
 
+
 def test_week4():
     setup_week_config(SundayDec31Config())
     base = date(2020, 12, 27)
@@ -146,4 +150,3 @@ def test_week4():
         assert wc.week(base + timedelta(days=i)) == Week(2020, 1), i
     for i in range(7, 14):
         assert wc.week(base + timedelta(days=i)) == Week(2020, 2), i
-        
