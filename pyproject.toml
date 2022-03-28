@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mdweek"
-version = "1.2.3"
+version = "1.2.4"
 description = "a utility package handling week based calculations"
 authors = ["Yasunori Horikoshi <hotoku@users.noreply.github.com>"]
 license = "MIT"
